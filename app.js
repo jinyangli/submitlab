@@ -7,8 +7,7 @@ var express = require('express')
   , routes = require('./routes')
   , eh = require('errorhandler')
   , multer = require('multer')
-  , stylus = require('stylus')
-  , url = require('url');
+  , stylus = require('stylus');
 
 //var app = module.exports = express.createServer();
 var app = express();
@@ -26,8 +25,8 @@ if (env == 'development')  {
 	app.use(eh());
 } 
 
-app.use(express.static(__dirname + '/public'));
 app.use(stylus.middleware({ src: __dirname + '/public'}));
+app.use(express.static(__dirname + '/public'));
 
 app.use(multer({ dest: __dirname + '/uploads/tmp/'}));
 
