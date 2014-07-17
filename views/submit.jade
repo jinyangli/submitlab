@@ -1,0 +1,22 @@
+extends layout 
+
+block content
+  h1 Lab-#{title} submission
+
+  form(id="myForm", action="/upload", method="post", enctype="multipart/form-data")
+    input(type="hidden", name="lab", value='#{title}')
+    p
+      label NYU Net-ID (e.g. ljy123): 
+      input(id="netid",type="text", name="netid", value='#{netid}')
+  
+    p 
+      label University ID (e.g. N12334456): 
+      input(id="uid", type="text", name="uid", value='#{uid}')
+
+    p
+      input(type="file", name="upfile")
+      input(type="submit", value="Upload")
+
+  div(class="statustb")
+    p
+      | Submission status:

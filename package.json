@@ -1,0 +1,14 @@
+{
+    "name": "submitlab"
+  , "version": "0.0.1"
+  , "private": true
+  , "dependencies": {
+      "express": ">=4.0"
+    , "stylus": ">= 0.0.1"
+    , "jade": ">= 0.0.1"
+	, "multer": ">=0.1.0"
+	, "errorhandler": ">=1.1.0"
+	, "url": ">0.10.0"
+  }
+  , "scripts":{"start":"nodejs app.js"}
+}
