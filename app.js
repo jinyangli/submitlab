@@ -18,7 +18,7 @@ app.set('views', __dirname + '/views');
 //app.set('upload_dir', __dirname + '/uploads');
 //app.set('upload_suffix', '.tgz');
 routes.set_param_upload_dir(__dirname + '/uploads');
-routes.set_param_upload_suffix('.tex');
+//routes.set_param_upload_suffix('tgz');
 
 var env = process.env.NODE_ENV || 'development';
 if (env == 'development')  {

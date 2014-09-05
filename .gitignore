@@ -1,0 +1,4 @@
+uploads
+node_modules
+public/stylesheets/style.css
+routes/index.js
