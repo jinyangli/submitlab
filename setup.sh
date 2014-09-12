@@ -33,19 +33,21 @@ then
     exit 1
 fi
 
-if [[ ${2} == *"."* ]]
-then
-    echo "No decimal point is allowed in the suffix"
-    echo ""
-    #usage
-    exit 1
-fi
+#if [[ ${2} == *"."* ]]
+#then
+#    echo "No decimal point is allowed in the suffix"
+#    echo ""
+#    #usage
+#    exit 1
+#fi
 
 num_labs=${1}
 suffix=${2}
 
+suffix=`echo ${suffix} | sed "s/^\.*\([^\.].*\)$/\1/g" | sed "s/^\(.*[^\.]\)\.*$/\1/g"`
+
 sed "s/__num_labs__/${num_labs}/g" routes/template_index.js >routes/index.js
-sed -i "s/__suffix__/${suffix}/g" routes/index.js
+sed -e "s/__suffix__/${suffix}/g" -i '' routes/index.js
 
 for i in $(seq 1 ${num_labs})
 do

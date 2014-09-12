@@ -11,12 +11,14 @@ var fs = require('fs');
 var url = require('url');
 
 var upload_dir = '/tmp';
-var upload_suffix = '__suffix__';
+var full_suffix = '__suffix__';
+var last_suffix = full_suffix.match(/[^\.]+$/g);
 exports.set_param_upload_dir = function(x) {
     upload_dir = x;
 };
 exports.set_param_upload_suffix = function(x) {
-    upload_suffix = x;
+    full_suffix = x;
+    last_suffix = full_suffix.match(/[^\.]+$/g);
 };
 
 function validate_user(netid, uid) {
@@ -27,7 +29,7 @@ exports.getstatus = function(req, res) {
     var url_parts = url.parse(req.url, true);
     var  query = url_parts.query;
     var upfile = upload_dir + '/lab' + query.lab + '/' + query.netid + '.' +
-        upload_suffix;
+        full_suffix;
     console.log("trying to determine status of " + upfile);
     fs.stat(upfile, function (err, stats) {
         var info = {};
@@ -52,12 +54,27 @@ exports.index = function(req, res){
     res.render('index', { title: 'Express' })
 };
 
+extract_lab_num = function(lab) {
+    var lab_str = lab.toString();
+    var lab_res = lab_str.match(/^\d+[a-zA-Z]?$/g);
+    var lab_num = -1;
+    if (lab_res) {
+        last_char = lab_str.charAt(lab_str.length - 1);
+        if (('a' <= last_char && last_char <= 'z') || ('A' <= last_char && last_char <= 'Z'))
+            lab_num = parseInt(lab_str.substr(0, lab_str.length - 1), 10);
+        else
+            lab_num = parseInt(lab_str, 10);
+    }
+    return lab_num;
+};
+
 exports.submit = function(req, res) {
     var url_parts = url.parse(req.url, true);
     var query = url_parts.query;
     var netid = (typeof query.netid === "undefined")? "" : query.netid;
     var uid = (typeof query.uid === "undefined")? "" : query.uid;
-    if (query.lab >= lab_id_min && query.lab <= lab_id_max) {
+    var lab_num = extract_lab_num(query.lab);
+    if (lab_num >= lab_id_min && lab_num <= lab_id_max) {
         res.render('submit', {title: query.lab, netid: netid, uid: uid});
     }else{
         error(/*req, */res, 200, 'Invalid Lab Number');
@@ -65,7 +82,8 @@ exports.submit = function(req, res) {
 };
 
 exports.upload = function(req, res) {
-    if (req.body.lab < lab_id_min || req.body.lab > lab_id_max) {
+    var lab_num = extract_lab_num(req.body.lab);
+    if (lab_num < lab_id_min || lab_num > lab_id_max) {
         error(/*req, */res, 200, 'Invalid Lab Number');
         return;
     }
@@ -78,18 +96,18 @@ exports.upload = function(req, res) {
     var tmp_path = req.files.upfile.path;
 
     //check it has the right suffix
-    var regex = new RegExp('.*\.' + upload_suffix + '$');
+    var regex = new RegExp('.*\\.' + last_suffix + '$');
     if (tmp_path.match(regex)) {
         console.log('matching suffix');
     } else {
         console.log('incorrect upload file suffix');
         error(/*req, */res, 500, 'Incorrect Upload File Suffix, should be *.'
-                + upload_suffix);
+                + last_suffix);
         return;
     }
 
     var target_path = upload_dir + '/lab' + req.body.lab + '/' + req.body.netid
-        + '.' + upload_suffix;
+        + '.' + full_suffix;
     rename_cb = function(err) {
         if (err) {
             console.error('lab: ' + req.body.lab + ', netid: ' + req.body.netid +
