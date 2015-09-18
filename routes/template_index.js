@@ -72,7 +72,7 @@ extract_lab_num = function(lab) {
 to_validate_user = function(netid, uid, scode) {
     var user_list = fs.readFileSync('userlist.txt', 'utf8');
     //console.log(user_list);
-    var user_string = netid + ' ' + uid + ' ' + scode;
+    var user_string = netid + ' ' + uid + ' ' + scode + ' ';
     //console.log(user_string);
     if (0 <= user_list.search(user_string)) {
         return true;

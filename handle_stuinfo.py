@@ -16,7 +16,7 @@ while (len(line) != 0):
 	uid = seg[0]
 	netid = seg[1].split('@')[0]
 	scode = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(5)])
-	out_userlist.write('%s %s %s\n'%(netid, uid, scode))
+	out_userlist.write('%s %s %s \n'%(netid, uid, scode))
 	out_emaillist.write('%s\n'%(seg[1]))
 	line = fptr.readline()
 fptr.close()
