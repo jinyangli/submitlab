@@ -1,0 +1,11 @@
+/*
+you should put students' info in this file.
+
+format: 
+the first column is University ID (e.g. N12334456)
+the second column is NYU email address (e.g. ljy123@nyu.edu)
+
+see an example below (NOTE: do not add this comment in your file)
+*/
+N12334456	ljy123@nyu.edu
+N65443321	jyl123@nyu.edu
