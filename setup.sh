@@ -46,7 +46,7 @@ suffix=${2}
 
 suffix=`echo ${suffix} | sed "s/^\.*\([^\.].*\)$/\1/g" | sed "s/^\(.*[^\.]\)\.*$/\1/g"`
 
-sed "s/__num_labs__/${num_labs}/g" -e "s/__suffix__/${suffix}/g" routes/template_index.js >routes/index.js
+sed -e "s/__num_labs__/${num_labs}/g" -e "s/__suffix__/${suffix}/g" routes/template_index.js >routes/index.js
 #sed -e "s/__suffix__/${suffix}/g" -i '' routes/index.js
 
 #handle students' information in studentinfo.txt
