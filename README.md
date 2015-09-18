@@ -1,6 +1,7 @@
 To set things up:
 ----------------
 -	edit your own studentinfo.txt file first
+-	$ python handle\_stuinfo.py (only execute once)
 -	$ npm install
 -	$ ./setup.sh numberoflabs handinsuffix (e.g. ./setup.sh 7 tgz)
 

@@ -49,9 +49,6 @@ suffix=`echo ${suffix} | sed "s/^\.*\([^\.].*\)$/\1/g" | sed "s/^\(.*[^\.]\)\.*$
 sed -e "s/__num_labs__/${num_labs}/g" -e "s/__suffix__/${suffix}/g" routes/template_index.js >routes/index.js
 #sed -e "s/__suffix__/${suffix}/g" -i '' routes/index.js
 
-#handle students' information in studentinfo.txt
-python handle_stuinfo.py
-
 for i in $(seq 1 ${num_labs})
 do
     mkdir -p "uploads/lab${i}"
