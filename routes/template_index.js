@@ -28,7 +28,7 @@ function validate_user(netid, uid) {
 exports.getstatus = function(req, res) {
     var url_parts = url.parse(req.url, true);
     var  query = url_parts.query;
-    var upfile = upload_dir + '/lab' + query.lab + '/' + query.netid + '.' +
+    var upfile = upload_dir + '/lab' + query.lab + '/' + query.netid + '/' + query.netid + '.' +
         full_suffix;
     console.log("trying to determine status of " + upfile);
     fs.stat(upfile, function (err, stats) {
@@ -36,6 +36,7 @@ exports.getstatus = function(req, res) {
         info['lab'] = query.lab;
         info['netid'] = query.netid;
         info['uid'] = query.uid;
+        info['scode'] = query.scode;
         if (!err) {
             info['submitMsg'] = ' submitted on ' + stats.mtime;
         }else{
@@ -68,14 +69,28 @@ extract_lab_num = function(lab) {
     return lab_num;
 };
 
+to_validate_user = function(netid, uid, scode) {
+    var user_list = fs.readFileSync('userlist.txt', 'utf8');
+    //console.log(user_list);
+    var user_string = netid + ' ' + uid + ' ' + scode;
+    //console.log(user_string);
+    if (0 <= user_list.search(user_string)) {
+        return true;
+    }else{
+        return false;
+    }
+};
+
 exports.submit = function(req, res) {
     var url_parts = url.parse(req.url, true);
     var query = url_parts.query;
     var netid = (typeof query.netid === "undefined")? "" : query.netid;
     var uid = (typeof query.uid === "undefined")? "" : query.uid;
+    var scode = (typeof query.scode === "undefined")? "" : query.scode;
     var lab_num = extract_lab_num(query.lab);
+    //console.log('submit lab_num: ', lab_num);
     if (lab_num >= lab_id_min && lab_num <= lab_id_max) {
-        res.render('submit', {title: query.lab, netid: netid, uid: uid});
+        res.render('submit', {title: query.lab, netid: netid, uid: uid, scode: scode});
     }else{
         error(/*req, */res, 200, 'Invalid Lab Number');
     }
@@ -93,6 +108,11 @@ exports.upload = function(req, res) {
         return;
     }
 
+    if (!to_validate_user(req.body.netid, req.body.uid, req.body.scode)) {
+        error(/*req, */res, 200, 'Invalid User');
+        return;
+    }
+
     var tmp_path = req.files.upfile.path;
 
     //check it has the right suffix
@@ -106,8 +126,13 @@ exports.upload = function(req, res) {
         return;
     }
 
-    var target_path = upload_dir + '/lab' + req.body.lab + '/' + req.body.netid
+    var target_path = upload_dir + '/lab' + req.body.lab + '/' + req.body.netid + '/' + req.body.netid
         + '.' + full_suffix;
+    if (fs.existsSync(target_path)) {
+        var d = new Date();
+        backup_path = target_path + '.' + d.getTime().toString();
+        fs.renameSync(target_path, backup_path);
+    }
     rename_cb = function(err) {
         if (err) {
             console.error('lab: ' + req.body.lab + ', netid: ' + req.body.netid +
